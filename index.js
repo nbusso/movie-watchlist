@@ -7,7 +7,7 @@ async function searchMovie(searchInput) {
     
     const moviePromises = searchResults.slice(0, 2).map(result => getMovieInfo(result.imdbID))
     const completeInfo = await Promise.all(moviePromises)
-    
+
     resultsContainer.innerHTML = completeInfo.join('')
 }
 
@@ -22,14 +22,14 @@ async function getMovieInfo(imdbID) {
                     <img src="${data.Poster}">
                 </div>
                 <div class="movie-card-info">
-                    <div class="movie-card-info-title"
+                    <div class="movie-card-info-title">
                         <h2>${data.Title}</h2>
                         <span>⭐️ ${data.imdbRating}</span>
                     </div>
                     <div class="movie-card-info-type">
                         <span>${data.Runtime}</span>
                         <span>${data.Genre}</span>
-                        <span>Watchlist</span>
+                        <span><a href="#"><img src="assets/img/icon-plus.svg" alt="Add to watchlist"> Watchlist</a></span>
                     </div>
                     <div class="movie-card-info-plot">
                         <p>${data.Plot}</p>
