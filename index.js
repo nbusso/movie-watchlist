@@ -1,11 +1,22 @@
+
+//DOM elements
+const searchForm = document.getElementById('search-form')
+const searchInput = document.getElementById('search-input')
 const resultsContainer = document.getElementById('results-container')
 
+// events
+searchForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+    searchMovie(searchInput.value)
+})
+
+// functions
 async function searchMovie(searchInput) {
-    const res = await fetch("http://www.omdbapi.com/?s=batman&type=movie&apikey=368ccef")
+    const res = await fetch(`http://www.omdbapi.com/?s=${searchInput}&type=movie&apikey=368ccef`)
     const data = await res.json()
     const searchResults = data.Search
     
-    const moviePromises = searchResults.slice(0, 2).map(result => getMovieInfo(result.imdbID))
+    const moviePromises = searchResults.slice(0, 3).map(result => getMovieInfo(result.imdbID))
     const completeInfo = await Promise.all(moviePromises)
 
     resultsContainer.innerHTML = completeInfo.join('')
@@ -41,6 +52,3 @@ async function getMovieInfo(imdbID) {
     // console.log(movieCard)
     return movieCard
 }
-
-// console.log(await getMovieInfo('tt1877830'))
-searchMovie('batman')
