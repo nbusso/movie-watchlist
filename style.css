@@ -108,6 +108,7 @@ header form {
 
 .movie-card-info-title {
     display: flex;
+    margin-bottom: 10px;
 }
 
 .movie-card-info-title h2 {
@@ -116,7 +117,8 @@ header form {
     font-size: 18px;
     font-style: normal;
     font-weight: 500;
-    line-height: 20px; /* 111.111% */
+    line-height: 20px;
+    padding-right: 10px; /* 111.111% */
 }
 
 .movie-card-info-title span {
@@ -125,6 +127,7 @@ header form {
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
+    flex-shrink: 0;
 }
 
 .movie-card-info-type {
@@ -156,4 +159,21 @@ header form {
     line-height: 20px;
     height: 60px;
     overflow: hidden;
+}
+
+.add-to-watchlist.in-watchlist {
+    color: #10B981;
+    font-weight: 600;
+}
+
+.add-to-watchlist.in-watchlist img {
+    filter: brightness(0) saturate(100%) invert(44%) sepia(58%) saturate(1000%) hue-rotate(130deg) brightness(98%) contrast(89%);
+}
+
+.add-to-watchlist:hover {
+    opacity: 0.8;
+}
+
+.add-to-watchlist.in-watchlist:hover {
+    color: #059669; 
 }
