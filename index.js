@@ -1,4 +1,4 @@
-import watchlist from "./data/watchlist.js"
+import { getWatchlist, saveToWatchlist } from './data/data.js'
 
 let moviesResults = []
 
@@ -6,6 +6,14 @@ let moviesResults = []
 const searchForm = document.getElementById('search-form')
 const searchInput = document.getElementById('search-input')
 const resultsContainer = document.getElementById('results-container')
+
+// load previous results
+document.addEventListener('DOMContentLoaded', () => {
+    moviesResults = JSON.parse(localStorage.getItem('searchResults')) || []
+    if (moviesResults.length > 0) {
+        renderMovieResults()
+    }
+})
 
 // events
 searchForm.addEventListener('submit', (e) => {
@@ -30,9 +38,13 @@ async function searchMovie(searchInput) {
     moviesResults = []
     
     const moviePromises = searchResults.slice(0, 3).map(result => getMovieInfo(result.imdbID))
-    const completeInfo = await Promise.all(moviePromises)
-
-    resultsContainer.innerHTML = completeInfo.join('')
+    await Promise.all(moviePromises)
+    
+    // Save in localStorage
+    localStorage.setItem('searchResults', JSON.stringify(moviesResults))
+    
+    // Render results
+    renderMovieResults()
 }
 
 
@@ -42,8 +54,16 @@ async function getMovieInfo(imdbID) {
     const data = await res.json()
 
     moviesResults.push(data)
+}
 
-    const movieCard = `
+function renderMovieResults() {
+    const watchlist = getWatchlist()
+    
+    const movieCards = moviesResults.map(data => {
+        // Check if movie is already in watchlist
+        const isInWatchlist = watchlist.some(movie => movie.imdbID === data.imdbID)
+        
+        return `
             <section class="movie-card">
                 <div class="movie-card-img">
                     <img src="${data.Poster}">
@@ -56,57 +76,39 @@ async function getMovieInfo(imdbID) {
                     <div class="movie-card-info-type">
                         <span>${data.Runtime}</span>
                         <span>${data.Genre}</span>
-                        <span><a href="#" class="add-to-watchlist" data-imdbid="${data.imdbID}"><img src="assets/img/icon-plus.svg" alt="Add to watchlist"> Watchlist</a></span>
+                        <span>
+                            <a href="#" class="add-to-watchlist ${isInWatchlist ? 'in-watchlist' : ''}" data-imdbid="${data.imdbID}">
+                                <img src="assets/img/${isInWatchlist ? 'icon-check.svg' : 'icon-plus.svg'}" alt="${isInWatchlist ? 'In watchlist' : 'Add to watchlist'}"> 
+                                ${isInWatchlist ? 'In Watchlist' : 'Watchlist'}
+                            </a>
+                        </span>
                     </div>
                     <div class="movie-card-info-plot">
                         <p>${data.Plot}</p>
                     </div>
                 </div>
             </section>
-    `
-
-    // console.log(movieCard)
-    return movieCard
+        `
+    })
+    
+    resultsContainer.innerHTML = movieCards.join('')
 }
+
 
 function addToWatchList(imdbID) {
     const movie = moviesResults.find(movie => movie.imdbID === imdbID)
 
     if (movie) {
-        const alreadyExists = watchlist.some(watchedMovie => watchedMovie.imdbID === imdbID)
-
-        if (!alreadyExists) {
-            const movieCopy = { ...movie }
-            watchlist.push(movieCopy)
+        const movieCopy = { ...movie }
+        const wasAdded = saveToWatchlist(movieCopy)
+        
+        if (wasAdded) {
             console.log('Movie added to watchlist:', movie.Title)
-            console.log('Watchlist actual:', watchlist)
+            console.log('Watchlist actual:', getWatchlist())
+
+            renderMovieResults()
         } else {
-            console.log('La pelicula ya está en watchlist!')
+            console.log('La película ya está en watchlist!')
         }
     }
-}
-
-function renderWatchlist() {
-
-    return `
-            <section class="movie-card">
-                <div class="movie-card-img">
-                    <img src="${watchlist.Poster}">
-                </div>
-                <div class="movie-card-info">
-                    <div class="movie-card-info-title">
-                        <h2>${watchlist.Title}</h2>
-                        <span>⭐️ ${watchlist.imdbRating}</span>
-                    </div>
-                    <div class="movie-card-info-type">
-                        <span>${watchlist.Runtime}</span>
-                        <span>${watchlist.Genre}</span>
-                        <span><a href="#" class="add-to-watchlist" data-imdbid="${watchlist.imdbID}"><img src="assets/img/icon-minus.svg" alt="Remove from watchlist"> Remove</a></span>
-                    </div>
-                    <div class="movie-card-info-plot">
-                        <p>${watchlist.Plot}</p>
-                    </div>
-                </div>
-            </section>
-    `
 }
