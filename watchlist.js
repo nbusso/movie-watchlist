@@ -22,7 +22,7 @@ function renderWatchlist() {
     const watchlist = getWatchlist()
 
     if (watchlist.length === 0) {
-        watchlistContainer.innerHTML = '<p>No movies in watchlist yet.</p>'
+        showEmptyWatchlistState()
         return
     }
 
@@ -60,4 +60,16 @@ function removeMovieFromWatchlist(imdbID) {
         localStorage.setItem('searchResults', JSON.stringify(searchResults))
     }
     console.log('Movie removed from watchlist')
+}
+
+function showEmptyWatchlistState() {
+    watchlistContainer.innerHTML = `
+        <div class="empty-state">
+            <p>Your watchlist is looking a little empty...</p>
+            <a href="./index.html">
+                <img src="assets/img/icon-plus.svg" alt="Add movies">
+                Let's add some movies!
+            </a>
+        </div>
+    `
 }

@@ -177,3 +177,40 @@ header form {
 .add-to-watchlist.in-watchlist:hover {
     color: #059669; 
 }
+
+/* Estados vacíos */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 400px;
+    color: #DFDDDD;
+    font-size: 1.125rem; /* 18px */
+    font-weight: 700;
+    line-height: 1.583; /* 28.5px / 18px */
+}
+
+.empty-state img {
+    margin-bottom: 16px;
+}
+
+.empty-state a {
+    color: #000;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.empty-state a:hover {
+    opacity: 0.8;
+}
+
+.empty-state a img {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}

@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
     moviesResults = JSON.parse(localStorage.getItem('searchResults')) || []
     if (moviesResults.length > 0) {
         renderMovieResults()
+    } else {
+        showInitialState()
     }
 })
 
@@ -31,20 +33,31 @@ resultsContainer.addEventListener('click', (e) => {
 
 // functions
 async function searchMovie(searchInput) {
-    const res = await fetch(`http://www.omdbapi.com/?s=${searchInput}&type=movie&apikey=368ccef`)
-    const data = await res.json()
-    const searchResults = data.Search
-
-    moviesResults = []
-    
-    const moviePromises = searchResults.slice(0, 3).map(result => getMovieInfo(result.imdbID))
-    await Promise.all(moviePromises)
-    
-    // Save in localStorage
-    localStorage.setItem('searchResults', JSON.stringify(moviesResults))
-    
-    // Render results
-    renderMovieResults()
+    try {
+        const res = await fetch(`http://www.omdbapi.com/?s=${searchInput}&type=movie&apikey=368ccef`)
+        const data = await res.json()
+        
+        // Verificar si la búsqueda tuvo resultados
+        if (data.Response === "False") {
+            showNoResultsState()
+            return
+        }
+        
+        const searchResults = data.Search
+        moviesResults = []
+        
+        const moviePromises = searchResults.slice(0, 3).map(result => getMovieInfo(result.imdbID))
+        await Promise.all(moviePromises)
+        
+        // Guardar en localStorage
+        localStorage.setItem('searchResults', JSON.stringify(moviesResults))
+        
+        // Renderizar resultados
+        renderMovieResults()
+    } catch (error) {
+        console.error('Error searching movies:', error)
+        showNoResultsState()
+    }
 }
 
 
@@ -111,4 +124,22 @@ function addToWatchList(imdbID) {
             console.log('La película ya está en watchlist!')
         }
     }
+}
+
+// Empty states
+function showInitialState() {
+    resultsContainer.innerHTML = `
+        <div class="empty-state">
+            <img src="assets/img/movie-icon.svg" alt="Movie icon" width="70">
+            <p>Start exploring</p>
+        </div>
+    `
+}
+
+function showNoResultsState() {
+    resultsContainer.innerHTML = `
+        <div class="empty-state">
+            <p>Unable to find what you're looking for. Please try another search.</p>
+        </div>
+    `
 }
