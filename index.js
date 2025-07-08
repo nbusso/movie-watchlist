@@ -37,7 +37,6 @@ async function searchMovie(searchInput) {
         const res = await fetch(`http://www.omdbapi.com/?s=${searchInput}&type=movie&apikey=368ccef`)
         const data = await res.json()
         
-        // Verificar si la búsqueda tuvo resultados
         if (data.Response === "False") {
             showNoResultsState()
             return
@@ -49,10 +48,8 @@ async function searchMovie(searchInput) {
         const moviePromises = searchResults.slice(0, 3).map(result => getMovieInfo(result.imdbID))
         await Promise.all(moviePromises)
         
-        // Guardar en localStorage
         localStorage.setItem('searchResults', JSON.stringify(moviesResults))
         
-        // Renderizar resultados
         renderMovieResults()
     } catch (error) {
         console.error('Error searching movies:', error)
@@ -73,7 +70,7 @@ function renderMovieResults() {
     const watchlist = getWatchlist()
     
     const movieCards = moviesResults.map(data => {
-        // Check if movie is already in watchlist
+        
         const isInWatchlist = watchlist.some(movie => movie.imdbID === data.imdbID)
         
         return `
@@ -126,7 +123,7 @@ function addToWatchList(imdbID) {
     }
 }
 
-// Empty states
+// empty states
 function showInitialState() {
     resultsContainer.innerHTML = `
         <div class="empty-state">

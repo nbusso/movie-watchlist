@@ -12,12 +12,11 @@ watchlistContainer.addEventListener('click', (e) => {
     }
 })
 
-// Renderizar al cargar
 document.addEventListener('DOMContentLoaded', () => {
     renderWatchlist()
 })
 
-// Funciones
+// Functions
 function renderWatchlist() {
     const watchlist = getWatchlist()
 
@@ -53,7 +52,7 @@ function renderWatchlist() {
 
 function removeMovieFromWatchlist(imdbID) {
     removeFromWatchlist(imdbID)
-    renderWatchlist() // Re-renderizar
+    renderWatchlist()
 
     const searchResults = JSON.parse(localStorage.getItem('searchResults')) || []
     if (searchResults.length > 0) {
