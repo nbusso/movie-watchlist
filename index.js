@@ -1,5 +1,8 @@
 import { getWatchlist, saveToWatchlist } from './data/data.js'
 
+const API_BASE_URL = 'https://www.odmdbapi.com/'
+const API_KEY = '368ccef'
+
 let moviesResults = []
 
 //DOM elements
@@ -34,7 +37,7 @@ resultsContainer.addEventListener('click', (e) => {
 // functions
 async function searchMovie(searchInput) {
     try {
-        const res = await fetch(`http://www.omdbapi.com/?s=${searchInput}&type=movie&apikey=368ccef`)
+        const res = await fetch(`${API_BASE_URL}?s=${searchInput}&type=movie&apikey=${API_KEY}`)
         const data = await res.json()
         
         if (data.Response === "False") {
@@ -60,7 +63,7 @@ async function searchMovie(searchInput) {
 
 async function getMovieInfo(imdbID) {
     console.log(imdbID)
-    const res = await fetch(`http://www.omdbapi.com/?i=${imdbID}&apikey=368ccef`)
+    const res = await fetch(`${API_BASE_URL}?i=${imdbID}&apikey=${API_KEY}`)
     const data = await res.json()
 
     moviesResults.push(data)
