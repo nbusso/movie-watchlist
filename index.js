@@ -1,6 +1,6 @@
 import { getWatchlist, saveToWatchlist } from './data/data.js'
 
-const API_BASE_URL = 'https://www.odmdbapi.com/'
+const API_BASE_URL = 'https://www.omdbapi.com/'
 const API_KEY = '368ccef'
 
 let moviesResults = []
